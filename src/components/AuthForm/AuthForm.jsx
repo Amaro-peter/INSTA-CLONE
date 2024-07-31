@@ -11,7 +11,7 @@ export default function AuthForm() {
   });
   const navigate = useNavigate();
   const handleAuth = () => {
-    if(inputs.email || inputs.password) {
+    if(!inputs.email || !inputs.password) {
       alert("Plase fill all the fields");
       return;
     }
