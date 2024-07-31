@@ -1,8 +1,24 @@
 import { Box, Button, VStack, Image, Input, Text, Flex } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
+  const [inputs, setIputs] = useState({
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
+  const navigate = useNavigate();
+  const handleAuth = () => {
+    if(inputs.email || inputs.password) {
+      alert("Plase fill all the fields");
+      return;
+    }
+    
+    navigate("/");
+  }
+
   return <>
     <Box border={"1px solid gray"} borderRadius={4} padding={5}>
       <VStack spacing={4}>
@@ -12,17 +28,28 @@ export default function AuthForm() {
           placeholder='Email'
           fontsize={14}
           type='email'
+          value={inputs.email}
+          onChange={(e) => setIputs({...inputs, email: e.target.value})}
         />
 
         <Input 
           placeholder='Password'
           fontsize={14}
           type="password"
+          value={inputs.password}
+          onChange={(e) => setIputs({...inputs, password: e.target.value})}
         />
 
-        {!isLogin ? (<Input placeholder='Confirm Password' fontsize={14} type="password"/>) : null}
+        {!isLogin ? (<Input 
+        placeholder='Confirm Password' 
+        fontsize={14} 
+        type="password"
+        value={inputs.confirmPassword}
+        onChange={(e) => setIputs({...inputs, confirmPassword: e.target.value})}
+        />
+        ) : null}
         
-        <Button w={"full"} colorScheme={"blue"} size={"sm"} fontsize={14}>
+        <Button w={"full"} colorScheme={"blue"} size={"sm"} fontsize={14} onClick={handleAuth}>
           {isLogin?  "Log in" : "Sign up"}
         </Button>
 
@@ -32,8 +59,30 @@ export default function AuthForm() {
           <Text mx={1} color={"white"}>OR</Text>
           <Box flex={2} h={"1px"} bg={"gray.400"}/>
         </Flex>
+
+        <Flex alignItems={"center"} justifyContent={"center"} cursor={"pointer"}>
+          <Image src="/google.png" w={5} cursor={"pointer"} alt='Google Logo' />
+          <Text mx={2} color={"blue.500"}>
+            Log in with Google
+          </Text>
+        </Flex>
       </VStack>
     </Box>
+
+    <Box border={"1px solid gray"} borderRadius={4} padding={5}>
+      <Flex alignItems={"center"} justifyContent={"center"}>
+        <Box mx={2} fontSize={14}>
+          {isLogin ? 
+          "Dont have an account?" : "Already have an account?"}
+        </Box>
+
+        <Box onClick={() => setIsLogin(!isLogin)} color={"blue.500"} cursor={"pointer"}>
+            {isLogin ? "Sign up" : "Log in"}
+        </Box>
+
+      </Flex>
+    </Box>
+
   </>;
 }
 
