@@ -1,4 +1,4 @@
-import { Flex, Box } from "@chakra-ui/react";
+import { Flex, Box, Spinner } from "@chakra-ui/react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import {useLocation} from "react-router-dom";
 import useAuthStore from "../../store/authStore";
@@ -32,7 +32,7 @@ const PageLayout = ({children}) => {
 
     const canRenderNavbar = !userAuth && !loading && pathname !== "/auth";
     
-    const checkingUserIsAuth = !userAuth && !loading;
+    const checkingUserIsAuth = !userAuth && loading;
     if (checkingUserIsAuth) {
         return <PageLayoutSpinner />;
     }
@@ -55,3 +55,11 @@ const PageLayout = ({children}) => {
 }
 
 export default PageLayout;
+
+const PageLayoutSpinner = () => {
+    return (
+        <Flex flexDir="column" h="100vh" alignItems={"center"} justifyContent={"center"}>
+            <Spinner size="xl" />
+        </Flex>
+    );
+}

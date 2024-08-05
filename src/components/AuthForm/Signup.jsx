@@ -1,7 +1,7 @@
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { InputGroup, InputRightElement, Button, Alert, AlertIcon } from '@chakra-ui/react';
 import { Input } from "@chakra-ui/input";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSignUpWithEmailAndPassword from '../../hooks/useSignUpWithEmailAndPassword';  
 
 export default function Signup() {
@@ -13,12 +13,24 @@ export default function Signup() {
       });
 
     const [showPassword, setShowPassword] = useState(false);
-    const {signup, errorMessage} = useSignUpWithEmailAndPassword();
+    const {signup, errorMessage, setErrorMessage, loading} = useSignUpWithEmailAndPassword();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         await signup(inputs);
     };
+
+    const handleInputFocus = () => {
+      if (errorMessage) {
+          setErrorMessage(null);
+      }
+    };
+
+    useEffect(() => {
+      // No need to reset errorMessage here as it's handled by handleInputFocus
+    }, [inputs, setErrorMessage]);
+
+    
 
   return (
     <>
@@ -29,6 +41,7 @@ export default function Signup() {
         value={inputs.email}
         size={"sm"}
         onChange={(e) => setInputs({...inputs, email: e.target.value})}
+        onFocus={handleInputFocus}
       />
 
       <Input 
@@ -38,6 +51,7 @@ export default function Signup() {
         value={inputs.username}
         size={"sm"}
         onChange={(e) => setInputs({...inputs, username: e.target.value})}
+        onFocus={handleInputFocus}
       />
 
       <Input 
@@ -47,6 +61,7 @@ export default function Signup() {
         value={inputs.fullName}
         size={"sm"}
         onChange={(e) => setInputs({...inputs, fullName: e.target.value})}
+        onFocus={handleInputFocus}
       />    
 
       <InputGroup>
@@ -57,6 +72,7 @@ export default function Signup() {
           value={inputs.password}
           size={"sm"}
           onChange={(e) => setInputs({...inputs, password: e.target.value})}
+          onFocus={handleInputFocus}
         />
 
         <InputRightElement h="full">
@@ -68,15 +84,17 @@ export default function Signup() {
       </InputGroup>
 
       <Button w="full" colorScheme='blue' size={"sm"} fontSize={14}
-      onClick={handleSubmit}>
+      onClick={handleSubmit}
+      isLoading={loading}
+      >
         Sign up
       </Button>
 
       {errorMessage && (
-                <Alert status="error" w="full" fontSize={14}>
-                    <AlertIcon />
-                    {errorMessage}
-                </Alert>
+        <Alert status="error" w="full" fontSize={14}>
+            <AlertIcon />
+            {errorMessage}
+        </Alert>
       )}
     </>
 

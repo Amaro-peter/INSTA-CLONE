@@ -1,6 +1,8 @@
+import { Alert, AlertIcon } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/input";
 import {Button} from "@chakra-ui/button";
 import { useState } from "react";
+import userLogin from "../../hooks/useLogin";
 
 
 export default function Login() {
@@ -8,6 +10,15 @@ export default function Login() {
         email: "",
         password: "",
       });
+      const {loading, error, setError, login} = userLogin()
+
+      const handleInputFocus = () => {
+        if (error) {
+            setError(null);
+        }
+      };
+
+
   return (
     <>
         <Input 
@@ -17,6 +28,7 @@ export default function Login() {
           value={inputs.email}
           size={"sm"}
           onChange={(e) => setInputs({...inputs, email: e.target.value})}
+          onFocus={handleInputFocus}
         />
 
         <Input 
@@ -26,8 +38,18 @@ export default function Login() {
           value={inputs.password}
           size={"sm"}
           onChange={(e) => setInputs({...inputs, password: e.target.value})}
+          onFocus={handleInputFocus}
         />
-        <Button w={"full"} colorScheme={"blue"} size={"sm"} fontSize={14}>
+
+        {error && (
+          <Alert status="error" w="full" fontSize={14}>
+              <AlertIcon />
+              {error}
+          </Alert>
+      )}  
+        <Button w={"full"} colorScheme={"blue"} size={"sm"} fontSize={14} 
+        isLoading={loading}
+        onClick={() => login(inputs)}>
             Log in
         </Button>
     </>

@@ -1,6 +1,6 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, firestore } from '../firebase/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, setDoc, query, where } from 'firebase/firestore';
 import { useToast } from '@chakra-ui/react';
 import useShowToast from './useShowToast';
 import { useState } from 'react';
@@ -10,28 +10,60 @@ function useSignUpWithEmailAndPassword() {
     const showToast = useShowToast();
     const toast = useToast();
     const [errorMessage, setErrorMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
     const loginUser = useAuthStore(state => state.login)
     const logoutUser = useAuthStore(state => state.logout)
 
     const signup = async (inputs) => {
+        setLoading(true);
         if (!inputs.email || !inputs.password || !inputs.username || !inputs.fullName) {
-            showToast("Error", "Please fill all the fields", "error", "top");
-            setErrorMessage(error);
-            return { success: false, error };
+            toast({
+                title: 'Error',
+                description: 'Please fill all the fields',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: "top"
+            });
+            setErrorMessage("Please fill all the fields");
+            setLoading(false);
+            return { success: false, error};
         }
+
+        const usersRef = collection(firestore, "users");
+
+        // Create a query against the collection.
+        const q = query(usersRef, where("username", "==", inputs.username));
+        const querySnapshot = await getDocs(q);
+
+        if(!querySnapshot.empty) {
+            toast({
+                title: 'Error',
+                description: 'Username already in use',
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+                position: "top"
+            });
+            setErrorMessage("Username already in use");
+            setLoading(false);
+            return { success: false, error};
+        }
+
         try {
             const newUser = await createUserWithEmailAndPassword(auth, inputs.email, inputs.password);
             if (!newUser) {
                 /*showToast("Error", "Email or username already in use", "error", "top");*/
                 toast({
                     title: 'Error',
-                    description: error.message,
+                    description: 'Email already in use',
                     status: 'error',
-                    duration: 9000,
+                    duration: 5000,
                     isClosable: true,
                     position: "top"
-                })
-                setErrorMessage(error);
+                });
+                setErrorMessage("Email already in use");
+                setLoading(false);
                 return { success: false, error };
             }
             if (newUser) {
@@ -62,9 +94,10 @@ function useSignUpWithEmailAndPassword() {
                 toast.promise(userCreationPromise, {
                     success: { title: 'Success', description: 'Account created successfully', duration: 7000, isClosable: true, position: 'top' },
                     error: { title: 'Error', description: 'Failed to create account', duration: 9000, position: 'top' },
-                    loading: { title: 'Creating Account', description: 'Please wait', position: 'top' },
+                    loading: { title: 'Creating Account', description: 'Please wait', isClosable: true, position: 'top' },
                 });
-
+                await userCreationPromise;
+                setLoading(false);
                 return { success: true };
             }
         } catch (error) {
@@ -73,17 +106,18 @@ function useSignUpWithEmailAndPassword() {
                 title: 'Error',
                 description: error.message,
                 status: 'error',
-                duration: 9000,
+                duration: 5000,
                 isClosable: true,
                 position: "top"
             })
 
-            setErrorMessage(error.message);
-            return { success: false, error: error.message };
+            setErrorMessage("Email already in use");
+            setLoading(false);
+            return { success: false, error};
         }
     }
 
-    return { signup, errorMessage };
+    return { signup, errorMessage, setErrorMessage, loading};
 }
 
 export default useSignUpWithEmailAndPassword;
