@@ -4,11 +4,14 @@ import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@chakra-ui/react';
 import useShowToast from './useShowToast';
 import { useState } from 'react';
+import useAuthStore from '../store/authStore';
 
 function useSignUpWithEmailAndPassword() {
     const showToast = useShowToast();
     const toast = useToast();
     const [errorMessage, setErrorMessage] = useState(null);
+    const loginUser = useAuthStore(state => state.login)
+    const logoutUser = useAuthStore(state => state.logout)
 
     const signup = async (inputs) => {
         if (!inputs.email || !inputs.password || !inputs.username || !inputs.fullName) {
@@ -49,6 +52,7 @@ function useSignUpWithEmailAndPassword() {
                     try {
                         await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
                         localStorage.setItem("user-info", JSON.stringify(userDoc));
+                        loginUser(userDoc);
                         resolve("Account created successfully");
                     } catch (error) {
                         reject("Failed to create account");
