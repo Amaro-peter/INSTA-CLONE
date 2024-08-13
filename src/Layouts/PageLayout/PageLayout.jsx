@@ -20,7 +20,7 @@ const PageLayout = ({children}) => {
                 clearInterval(interval);
                 resolve(userAuth);
               }
-            }, 100); // Check every 100ms
+            }, 50); // Check every 100ms
           });
         };
     

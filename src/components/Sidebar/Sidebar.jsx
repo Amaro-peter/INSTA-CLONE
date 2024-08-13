@@ -4,8 +4,10 @@ import { CreatePostLogo, InstagramLogo, InstagramMobileLogo, NotificationsLogo, 
 import { AiFillHome } from "react-icons/ai";
 import { BiLogOut } from "react-icons/bi";
 import useLogout from "../../hooks/useLogout";
+import useUserProfileStore from "../../store/userProfileStore";
 
 export default function Sidebar() {
+  
   const sidebarItems = [
     {
       icon: <AiFillHome size={25} />,
@@ -25,9 +27,9 @@ export default function Sidebar() {
       text:"Create",
     },
     {
-      icon: <Avatar size={"sm"} name="John Doe" src="/profilepic.png" />,
+      icon: <Avatar size={"sm"} name="Jane Doe" src="/profilepic.png" />,
       text:"Profile",
-      link: "/asaprogrammer",
+      link: "/janedoe",
     }
   ];
   

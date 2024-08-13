@@ -1,9 +1,20 @@
-import { Container, Flex } from '@chakra-ui/react';
+import { Container, Flex, Text, Link, Skeleton, SkeletonCircle, VStack } from '@chakra-ui/react';
 import ProfileHeader from '../../components/Profile/ProfileHeader';
 import ProfilePosts from '../../components/Profile/ProfilePosts';
 import ProfileTabs from '../../components/Profile/ProfileTabs';
+import useGetUserProfileByUsername from '../../hooks/useGetUserProfileByUsername';
+import { useParams } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function ProfilePage() {
+  const {username} = useParams();
+  console.log()
+  const {isLoading, userProfile} = useGetUserProfileByUsername(username);
+
+  const userNotFound = !isLoading && !userProfile;
+  if(userNotFound) {
+    return <UserNotFound />
+  }
   return (
     <Container maxW={"container.lg"} py={5}>
 
@@ -15,7 +26,8 @@ export default function ProfilePage() {
         mx={"auto"}
         flexDirection={"column"}
         >
-            <ProfileHeader />
+            {!isLoading && userProfile && <ProfileHeader />}
+            {isLoading && <ProfileHeaderSkeleton />}
         </Flex>
         <Flex
         px={{base: 2, sm: 4}}
@@ -31,4 +43,40 @@ export default function ProfilePage() {
 
     </Container>
   )
+}
+
+const ProfileHeaderSkeleton = () => {
+  return (
+    <Flex
+    gap={{base: 4, md: 8}}
+    py={10}
+    direction={{base: "column", sm: "row"}}
+    justifyContent={"center"}
+    alignItems={"center"}
+    >
+      <SkeletonCircle size={"24"} />
+      <VStack 
+      alignItems={{base: "center", sm: "flex-start"}}
+      gap={2}
+      mx={"auto"}
+      flex={1}
+      >
+        <Skeleton height="12px" width="150px" />
+        <Skeleton height="12px" width="100px" />
+      </VStack> 
+    </Flex>
+  )
+}
+
+const UserNotFound = () => {
+  return (
+    <Flex flexDir={"column"} textAlign={"center"} mx={"auto"}>
+      <Text fontSize={"2x1"}>
+        User Not Found
+      </Text>
+      <Link as={RouterLink} to={"/"} color={"blue.500"}>
+        Go back to Home
+      </Link>
+    </Flex>
+  );
 }

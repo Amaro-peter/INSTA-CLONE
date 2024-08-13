@@ -2,7 +2,7 @@ import { Flex, Image, Text } from "@chakra-ui/react"
 import {auth, firestore} from "../../firebase/firebase";
 import { useToast } from "@chakra-ui/react";
 import useAuthStore from "../../store/authStore";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, getDoc } from "firebase/firestore";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 
@@ -14,12 +14,11 @@ function GoogleAuth({prefix}) {
   const handleGoogleAuth = async () => {
     try{
       let googleProvider = new GoogleAuthProvider();
-      let response = signInWithPopup(auth, googleProvider);
-      const newUser = await response;
+      const newUser = await signInWithPopup(auth, googleProvider);
       if(!newUser && error) {
         toast({
           title: 'Error',
-          description: error.message,
+          description: "Error over here " + error.message,
           status: 'error',
           duration: 5000,
           isClosable: true,
@@ -56,7 +55,7 @@ function GoogleAuth({prefix}) {
     } catch (error) {
       toast({
         title: 'Error',
-        description: error.message,
+        description: "Error here " + error.message,
         status: 'error',
         duration: 5000,
         isClosable: true,
