@@ -14,6 +14,7 @@ export default function HomePage() {
         maxW={"300px"}
         >
           <SuggestedUsers />
+          
         </Box>
       </Flex>
 

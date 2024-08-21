@@ -2,13 +2,17 @@ import { Avatar, AvatarGroup, Flex, VStack, Text, Button, useDisclosure } from "
 import useUserProfileStore from "../../store/userProfileStore";
 import useAuthStore from "../../store/authStore";
 import EditProfile from "./EditProfile";
+import useFollowUser from "../../hooks/useFollowUser";
 
 export default function ProfileHeader() {
   const {userProfile} = useUserProfileStore();
   const authUser = useAuthStore(state => state.user);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {isFollowing, isUpdating, handleFollowUser} = useFollowUser(userProfile?.uid);
+
   const visitingOwnProfileAndAuth = authUser && authUser.username === userProfile.username;
   const visitingAnotherProfileAndAuth = authUser && authUser.username !== userProfile.username;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Flex gap={{base: 4, sm:10}} py={10} direction={{base:"column", sm:"row"}}>
         <AvatarGroup
@@ -45,8 +49,15 @@ export default function ProfileHeader() {
 
                 {visitingAnotherProfileAndAuth && (
                     <Flex gap={4} alignItems={"center"} justifyContent={"center"}>
-                    <Button bg={"blue.500"} color={"white"} _hover={{bg:"blue.600"}} size={{base:"xs", md:"sm"}}>
-                        Follow
+                    <Button 
+                    bg={"blue.500"} 
+                    color={"white"} 
+                    _hover={{bg:"blue.600"}} 
+                    size={{base:"xs", md:"sm"}}
+                    onClick={handleFollowUser}
+                    isLoading={isUpdating}
+                    >
+                        {isFollowing ? "Unfollow" : "Follow"}
                     </Button>
                     </Flex>
                 )}
