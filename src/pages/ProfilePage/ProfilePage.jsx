@@ -8,7 +8,6 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export default function ProfilePage() {
   const {username} = useParams();
-  console.log()
   const {isLoading, userProfile} = useGetUserProfileByUsername(username);
 
   const userNotFound = !isLoading && !userProfile;
