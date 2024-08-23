@@ -28,7 +28,7 @@ import { arrayRemove, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import userPostStore from '../../store/postStore';
 import Caption from '../Comment/Caption';
 
-export default function ProfilePost({post}) {
+export default function ProfilePost({post, posts}) {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const userProfile = useUserProfileStore((state) => state.userProfile)
   const authUser = useAuthUser((state) => state.user)
@@ -60,7 +60,8 @@ export default function ProfilePost({post}) {
     } finally{
         setIsDeleting(false)
     }
-  } 
+  }
+  
   return (
     <>
         <GridItem
@@ -101,6 +102,7 @@ export default function ProfilePost({post}) {
                     </Flex>
                 </Flex>
             </Flex>
+        
             <Image src={post.imageURL} alt="profile post" w={"100%"} h={"100%"} objectFit={"cover"}/>
         </GridItem>
 
@@ -137,7 +139,7 @@ export default function ProfilePost({post}) {
                             </Text>
                         </Flex>
 
-                        {authUser?.uid === userProfile.uid && (
+                        {authUser.uid === userProfile.uid && (
                             <Button
                             size={"sm"}
                             bg={"transparent"} 

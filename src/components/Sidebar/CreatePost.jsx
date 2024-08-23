@@ -22,6 +22,7 @@ import { useState, useRef } from 'react';
 import usePreviewImg from '../../hooks/usePreviewImg';
 import useCreatePost from '../../hooks/useCreatePost';
 import useShowToast from '../../hooks/useShowToast';
+import useAuthUser from '../../store/authStore';
 
 function CreatePost() {
   const {isOpen, onOpen, onClose} = useDisclosure()
@@ -36,12 +37,15 @@ function CreatePost() {
 
   const showToast = useShowToast()
 
+  const authUser = useAuthUser((state) => state.user)
+
+
   const handlePostCreation = async () => {
     if(isLoading) {
       return
     }
     try{
-        await handleCreatePost(selectedFile, caption)
+        await handleCreatePost(selectedFile, caption, authUser.uid)
         onClose()
         setCaption("")
         setSelectedFile(null)

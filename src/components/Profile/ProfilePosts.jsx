@@ -3,9 +3,11 @@ import ProfilePost from "./ProfilePost";
 import useGetUserPosts from "../../hooks/useGetUserPosts";
 import NoPostsFound from "../FeedPosts/NoPostsFound";
 
+
 export default function ProfilePosts() {
 
-  const {isLoading, posts} = useGetUserPosts()
+  
+  const { isLoading, posts } = useGetUserPosts();
 
   const noPostFound = !isLoading && posts.length === 0
   if(noPostFound) {
@@ -31,7 +33,7 @@ export default function ProfilePosts() {
       {!isLoading  && (
         <>
           {posts.map((post) => (
-            <ProfilePost post={post} key={post.id} />
+            <ProfilePost post={post} key={post.id} posts={posts} />
           ))}
         </>
       )}
