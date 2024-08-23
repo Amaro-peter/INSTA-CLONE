@@ -1,4 +1,4 @@
-import { Box, Container, Flex, VStack, SkeletonCircle, Skeleton } from '@chakra-ui/react'
+import { Box, Container, Flex, Text, VStack, SkeletonCircle, Skeleton } from '@chakra-ui/react'
 import FeedPost from './FeedPost';
 import useGetFeedPosts from '../../hooks/useGetFeedPosts';
 
@@ -23,6 +23,21 @@ export default function FeedPosts() {
         </VStack>
       ))}
       {!isLoading && posts.length > 0 && posts.map((post) => <FeedPost key={post.id} post={post} />)}
+      {!isLoading && posts.length === 0 && (
+        <Flex justifyContent={"center"} alignItems={"center"} h={"full"}>
+          <Box 
+          fontSize={"large"} 
+          color={"white"} 
+          fontWeight={"medium"} 
+          whiteSpace={"pre-wrap"} 
+          wordBreak={"break-word"}
+          maxW={"300px"} // Adjust the width as needed
+          textAlign={"center"}
+          >
+            Follow users to see their posts.
+          </Box>
+        </Flex>
+      )}
     </Container>
   );
 }

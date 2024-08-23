@@ -3,11 +3,13 @@ import usePostStore from '../store/postStore'
 import useAuthStore from '../store/authStore'
 import useShowToast from './useShowToast' 
 import useUserProfileStore from '../store/userProfileStore'
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { firestore } from "../firebase/firebase";
 
 function useGetFeedPosts() {
   const [isLoading, setIsLoading] = useState(true)
   const {posts, setPosts} = usePostStore()
-  const authUser = useAuthStore()
+  const authUser = useAuthStore((state) => state.user)
   const showToast = useShowToast()
   const {setUserProfile} = useUserProfileStore()
 
@@ -19,12 +21,8 @@ function useGetFeedPosts() {
         setPosts([])
         return
       }
-      if(posts.length === 0) {
-        setIsLoading(false)
-        setPosts([])
-        return
-      }
-      const q = query(collection(Firestore, "posts"), where("createdBy", "in", authUser.following))
+      
+      const q = query(collection(firestore, "posts"), where("createdBy", "in", authUser.following))
       try{
         const querySnapshot = await getDocs(q)
         const feedPosts = []
@@ -34,7 +32,7 @@ function useGetFeedPosts() {
         feedPosts.sort((a, b) => b.createdAt - a.createdAt)
         setPosts(feedPosts)
       } catch(error) {
-        showToast("Error", error.message, "error")
+        showToast("Error", "error here:" + error.message, "error")
       } finally {
         setIsLoading(false)
       }
@@ -42,7 +40,7 @@ function useGetFeedPosts() {
     if(authUser) {
       getFeedPosts()
     }
-  }, [authUser,  showToast, setPosts, setUserProfile])
+  }, [authUser, showToast, setPosts, setUserProfile])
   return{isLoading, posts}
 }
 
