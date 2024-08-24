@@ -139,7 +139,7 @@ export default function ProfilePost({post, posts}) {
                             </Text>
                         </Flex>
 
-                        {authUser.uid === userProfile.uid && (
+                        {authUser?.uid === userProfile?.uid && (
                             <Button
                             size={"sm"}
                             bg={"transparent"} 

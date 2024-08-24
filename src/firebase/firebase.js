@@ -5,13 +5,13 @@ import { getStorage } from "firebase/storage";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAoT70EX26K_CxPVyAH0kLb6xKdt0pxtzw",
-  authDomain: "insta-clone-teste-3fc1f.firebaseapp.com",
-  projectId: "insta-clone-teste-3fc1f",
-  storageBucket: "insta-clone-teste-3fc1f.appspot.com",
-  messagingSenderId: "826616583565",
-  appId: "1:826616583565:web:40b1a65af4a69ad77099c4",
-  measurementId: "G-GM7HN9SBKS"
+  apiKey: "AIzaSyAp6qDdV3hPVUEfxjCaIeYDY5j3W6iPbX4",
+  authDomain: "insta-teste-2.firebaseapp.com",
+  projectId: "insta-teste-2",
+  storageBucket: "insta-teste-2.appspot.com",
+  messagingSenderId: "167443188967",
+  appId: "1:167443188967:web:afb21df0f1d449c1662642",
+  measurementId: "G-H6SWKN77VP"
 };
 
 // Initialize Firebase
